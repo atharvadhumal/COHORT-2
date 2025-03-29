@@ -1,26 +1,29 @@
-import { memo, useState } from "react";
+import { useEffect, useState } from 'react'
+import axios from "axios"
+
+
+function useTodos() { //here we made can customHook
+  const [todos, setTodos] = useState([]);
+
+  useEffect(() => {
+    axios.get('https://jsonplaceholder.typicode.com/todos')
+      .then( (response) => {
+        setTodos(response.data.slice(0, 5))
+      })
+  }, []);  
+
+  return todos;
+}
+  
 
 function App() {
-  const [count, setCount] = useState(0)
+const todos = useTodos(); //when customHook is called it will run 
 
-  function onClick() {
-    console.log("child clicked")
-  }
-
-  return <div>
-    <Child onClick={onClick} />
-    <button onClick={() => {
-      setCount(count + 1);
-    }}>Click me {count}</button>
-  </div>
+  return (
+    <>
+    {todos}
+    </>
+  )
 }
 
-const Child = memo(({onClick}) => {
-  console.log("child render")
-
-  return <div>
-    <button onClick={onClick}>Button clicked</button>
-  </div>
-})
-
-export default App;
+export default App; 
